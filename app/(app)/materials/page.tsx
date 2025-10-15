@@ -292,7 +292,8 @@ export default function MaterialsPage() {
         description: `${materialsInUse.length} matière${materialsInUse.length > 1 ? "s" : ""} ${materialsInUse.length > 1 ? "sont utilisées" : "est utilisée"} dans des formules : ${details}`,
         variant: "destructive",
       })
-      setIsDeleteMultipleDialogOpen(false)
+      
+      // On ne ferme pas la boîte de dialogue immédiatement pour que l'utilisateur puisse voir le message
       return
     }
 
@@ -326,10 +327,11 @@ export default function MaterialsPage() {
   const isSomeSelected = selectedIds.length > 0 && selectedIds.length < filteredMaterials.length
 
   const getStockStatus = (stock: number) => {
-    if (stock < 0.02) return { label: "Faible", variant: "destructive" as const } // < 20g
-    if (stock < 0.1) return { label: "Moyen", variant: "default" as const } // < 100g
-    if (stock < 0.5) return { label: "Bon", variant: "secondary" as const } // < 500g
-    return { label: "Excellent", variant: "secondary" as const } // >= 500g
+    if (stock <= 0) return { label: "Hors stock", variant: "destructive" as const }
+    if (stock <= 0.05) return { label: "Faible", variant: "warning" as const }
+    if (stock <= 0.1) return { label: "Moyen", variant: "default" as const }
+    if (stock <= 1) return { label: "Bon", variant: "secondary" as const }
+    return { label: "Excellent", variant: "secondary" as const }
   }
 
   return (
